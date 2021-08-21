@@ -38,18 +38,30 @@ Vue.component('booking-form', {
 <h6>{{ month }}</h6>
 </div>
 <div class="d-flex flex-column">
-<span>Godere</span>
-<span>Reservation for {{bookingFormStep1.party}}</span>
+<span><strong>Godere</strong></span>
+<span><strong>Reservation for {{bookingFormStep1.party}}</strong></span>
 <span>{{day}} . {{bookingFormStep1.time[0]}}</span>
 </div>
 </div>
-<div class="form-group">
+<div class="row pb-4">
+<div class="col-sm-6">
   <label for="exampleInputEmail1">Email address</label>
   <input @keyup="bookingFormSubmit"  type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
 </div>
-<div class="form-group">
+<div class="col-sm-6">
   <label for="exampleInputPassword1">Password</label>
   <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+</div>
+<div class="col-sm-6">
+<label for="exampleInputPassword1">Password</label>
+<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+<label for="exampleInputPassword1">Password</label>
+<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+</div>
+<div class="col-sm-6">
+<label for="exampleInputPassword1">Password</label>
+<textarea class="w-100 h-100 form-control"></textarea>
+</div>
 </div>
 <button @click="prevStep" type="button" class="btn btn-primary">Back</button>
 <button @click="nextStep" type="button" class="btn btn-primary">Next</button>
