@@ -1,0 +1,19 @@
+.timeItem {
+    cursor: pointer;
+
+    &:hover {
+        background-color: green;
+        color: #ffffff;
+    }
+}
+
+.selected {
+    background: green;
+    color: #ffffff;
+}
+
+.wrapperInner {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+}

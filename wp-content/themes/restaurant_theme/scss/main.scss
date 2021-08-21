@@ -1,0 +1,159 @@
+@import 'ourstory';
+@import 'menu';
+@import 'booking';
+$main-font:'Montserrat',
+sans-serif;
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+a {
+    font-family: $main-font;
+}
+
+.main-font {
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+
+#logo-main {
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    font-weight: 700;
+    font-size: 26px;
+}
+
+#mainNav {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+
+    #mobileMenuIcon {
+        display: none;
+
+        @media only screen and (max-width: 768px) {
+            display: block;
+        }
+    }
+
+    .main-nav {
+
+
+        padding: 10px 0px 0px 0px;
+        display: flex;
+        align-items: center;
+        margin: 0px;
+
+        li {
+            margin: 0px 22px 0px 22px;
+            list-style: none;
+
+            &:nth-of-type(3) {
+                background: black;
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 14px;
+
+                a {
+                    padding: 10px;
+                }
+
+            }
+
+            &:nth-of-type(1),
+            &:nth-of-type(2) {
+
+                a {
+                    color: #211f1f;
+                    font-weight: 500;
+                    font-size: 18px;
+                }
+            }
+
+            a {
+                font-family: $main-font;
+                color: white;
+                text-decoration: none;
+
+            }
+        }
+
+        @media only screen and (max-width: 768px) {
+            display: none;
+        }
+    }
+}
+
+.image_hero_front {
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    // position: relative;
+
+    .image_hero_front__title {
+        font-size: 54px;
+        color: white;
+        font-family: $main-font;
+    }
+
+    .image_hero_front__cotactDetails {
+        position: absolute;
+        bottom: 20px;
+        left: 40px;
+
+        p {
+            font-family: $main-font;
+        }
+    }
+
+}
+
+.reviews_section {
+    .social {
+        i {
+            font-size: 25px;
+            cursor: pointer;
+        }
+    }
+}
+
+.footer-nav {
+    display: flex;
+
+
+    li {
+
+        margin: 0px 20px 0px 20px;
+        font-size: 24px;
+
+        &:nth-of-type(1) {
+            list-style: none;
+        }
+
+
+        a {
+            color: black;
+            text-decoration: none;
+            padding: 0px 0px 10px 0px;
+        }
+    }
+
+}
+
+.footer__contact {
+    p {
+        font-size: 24px;
+    }
+}
+
+.current_page_item {
+    border-bottom: 2px solid black;
+    font-weight: bold;
+}

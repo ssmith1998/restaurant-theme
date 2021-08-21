@@ -1,0 +1,121 @@
+.social i:first-of-type:hover {
+  color: #008cff; }
+
+.social i:hover {
+  color: #ff00d4; }
+
+.category h2 {
+  font-weight: bold; }
+
+.menuTitle {
+  font-weight: bold; }
+
+.timeItem {
+  cursor: pointer; }
+  .timeItem:hover {
+    background-color: green;
+    color: #ffffff; }
+
+.selected {
+  background: green;
+  color: #ffffff; }
+
+.wrapperInner {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px; }
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+a {
+  font-family: "Montserrat", sans-serif; }
+
+.main-font {
+  font-family: 'Montserrat', sans-serif; }
+
+#logo-main {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  font-weight: 700;
+  font-size: 26px; }
+
+#mainNav {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 100%; }
+  #mainNav #mobileMenuIcon {
+    display: none; }
+    @media only screen and (max-width: 768px) {
+      #mainNav #mobileMenuIcon {
+        display: block; } }
+  #mainNav .main-nav {
+    padding: 10px 0px 0px 0px;
+    display: flex;
+    align-items: center;
+    margin: 0px; }
+    #mainNav .main-nav li {
+      margin: 0px 22px 0px 22px;
+      list-style: none; }
+      #mainNav .main-nav li:nth-of-type(3) {
+        background: black;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px; }
+        #mainNav .main-nav li:nth-of-type(3) a {
+          padding: 10px; }
+      #mainNav .main-nav li:nth-of-type(1) a, #mainNav .main-nav li:nth-of-type(2) a {
+        color: #211f1f;
+        font-weight: 500;
+        font-size: 18px; }
+      #mainNav .main-nav li a {
+        font-family: "Montserrat", sans-serif;
+        color: white;
+        text-decoration: none; }
+    @media only screen and (max-width: 768px) {
+      #mainNav .main-nav {
+        display: none; } }
+
+.image_hero_front {
+  height: 100vh;
+  width: 100%;
+  background-size: cover; }
+  .image_hero_front .image_hero_front__title {
+    font-size: 54px;
+    color: white;
+    font-family: "Montserrat", sans-serif; }
+  .image_hero_front .image_hero_front__cotactDetails {
+    position: absolute;
+    bottom: 20px;
+    left: 40px; }
+    .image_hero_front .image_hero_front__cotactDetails p {
+      font-family: "Montserrat", sans-serif; }
+
+.reviews_section .social i {
+  font-size: 25px;
+  cursor: pointer; }
+
+.footer-nav {
+  display: flex; }
+  .footer-nav li {
+    margin: 0px 20px 0px 20px;
+    font-size: 24px; }
+    .footer-nav li:nth-of-type(1) {
+      list-style: none; }
+    .footer-nav li a {
+      color: black;
+      text-decoration: none;
+      padding: 0px 0px 10px 0px; }
+
+.footer__contact p {
+  font-size: 24px; }
+
+.current_page_item {
+  border-bottom: 2px solid black;
+  font-weight: bold; }

@@ -1,0 +1,16 @@
+{
+    "name": "sean/booking_system",
+    "description": "Plugin for bookings",
+    "type": "project",
+    "authors": [{
+        "name": "Sean Smith",
+        "email": "smith.sean1998@gmail.com"
+    }],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Inc\\": "./inc"
+        }
+    }
+}
