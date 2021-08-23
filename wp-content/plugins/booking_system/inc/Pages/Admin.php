@@ -2,8 +2,9 @@
 
 namespace Inc\Pages;
 
-use \Inc\Base\BaseController;
 use \Inc\Api\SettingsApi;
+use \Inc\Base\BaseController;
+use \Inc\Api\Callbacks\AdminCallbacks;
 
 class Admin extends BaseController
 
@@ -13,13 +14,17 @@ class Admin extends BaseController
 
     public $pages = array();
     public $subpages = array();
+    public $callbacks;
 
-    public function __construct()
-    {
-        $this->settings = new SettingsApi();
-    }
     public function register()
     {
+        $this->settings = new SettingsApi();
+        $this->callbacks = new AdminCallbacks();
+
+        $this->setSettings();
+        $this->setSections();
+        $this->setFields();
+
         // add_action('admin_menu', array($this, 'add_admin_pages'));
 
         $pages = [
@@ -28,9 +33,7 @@ class Admin extends BaseController
                 'menu_title' => 'Booking System',
                 'capibility' => 'manage_options',
                 'menu_slug' => 'booking_system_plugin',
-                'callback' => function () {
-                    echo "<h1>PLUGIN</h1>";
-                },
+                'callback' => array($this->callbacks, 'adminDashboard'),
                 'icon_url' => 'dashicons-store',
                 'position' => '110'
             ],
@@ -57,9 +60,7 @@ class Admin extends BaseController
                 'menu_title' => 'New Booking',
                 'capibility' => 'manage_options',
                 'menu_slug' => 'booking_new',
-                'callback' => function () {
-                    echo "<h1>New Booking</h1>";
-                }
+                'callback' => array($this->callbacks, 'newBookingScreen')
             ],
 
             [
@@ -68,13 +69,54 @@ class Admin extends BaseController
                 'menu_title' => 'View Bookings',
                 'capibility' => 'manage_options',
                 'menu_slug' => 'view-bookings',
-                'callback' => function () {
-                    echo "<h1>View Booking</h1>";
-                }
+                'callback' => array($this->callbacks, 'viewBookingScreen')
             ],
         ];
 
         $this->settings->addPages($pages)->withSubPage('Dashboard')->addSubPages($this->subpages)->register();
+    }
+
+    public function setSettings()
+    {
+        $args = array(
+            array(
+                "option_group" => "booking_system_options_group",
+                "option_name" => "text_example",
+                "callback" => array($this->callbacks, 'bookingSystemGroup')
+            )
+        );
+        $this->settings->setSettings($args);
+    }
+
+    public function setSections()
+    {
+        $args = array(
+            array(
+                "id" => "admin_index",
+                "title" => "Settings",
+                "callback" => array($this->callbacks, 'bookingSystemSection'),
+                "page" => "booking_system_plugin"
+            )
+        );
+        $this->settings->setSections($args);
+    }
+
+    public function setFields()
+    {
+        $args = array(
+            array(
+                "id" => "text_example",
+                "title" => "Text Example",
+                "callback" => array($this->callbacks, 'bookingSystemTextExample'),
+                "page" => "booking_system_plugin",
+                "section" => "admin_index",
+                "args" => array(
+                    'label_for' => 'text example',
+                    'classes' => 'form-control'
+                )
+            )
+        );
+        $this->settings->setFields($args);
     }
 
     // public function add_admin_pages()
