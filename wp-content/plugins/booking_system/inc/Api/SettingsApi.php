@@ -9,6 +9,7 @@ class SettingsApi
     public $settings = array();
     public $sections = array();
     public $fields = array();
+    public $customPostTypes = array();
 
 
     public function register()
@@ -20,6 +21,15 @@ class SettingsApi
         if (!empty($this->settings)) {
             add_action('admin_init', array($this, 'registerCustomFields'));
         }
+        // if (!empty($this->customPostTypes)) {
+
+        add_action('admin_init', array($this, 'registerCustomPostTypes'));
+        // }
+    }
+
+    public function addCustomPostTypes(array $postTypes)
+    {
+        $this->customPostTypes = $postTypes;
     }
     public function addPages(array $pages)
     {
@@ -100,6 +110,28 @@ class SettingsApi
         }
         foreach ($this->fields as $field) {
             add_settings_field($field['id'], $field['title'], (isset($field['callback']) ? $field['callback'] : ''), $field['page'], $field['section'], $field['args']);
+        }
+    }
+
+    public function registerCustomPostTypes()
+    {
+        // Our custom post type function
+        foreach ($this->customPostTypes as $customPostType) {
+            register_post_type(
+                $customPostType['name'],
+                // CPT Options
+                array(
+                    'labels' => array(
+                        'name' => __($customPostType['label']),
+                        'singular_name' => __($customPostType['singularName'])
+                    ),
+                    'public' => true,
+                    'has_archive' => true,
+                    'rewrite' => array('slug' => $customPostType['slug']),
+                    'show_in_rest' => true,
+
+                )
+            );
         }
     }
 }

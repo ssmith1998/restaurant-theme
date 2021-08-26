@@ -15,6 +15,7 @@ class Admin extends BaseController
     public $pages = array();
     public $subpages = array();
     public $callbacks;
+    public $postTypes = array();
 
     public function register()
     {
@@ -73,7 +74,17 @@ class Admin extends BaseController
             ],
         ];
 
+        $this->postTypes = array(
+            array(
+                'name' => 'bookings',
+                'label' => 'Bookings',
+                'singularName' => 'bookings',
+                'slug' => 'bookings'
+            )
+        );
+
         $this->settings->addPages($pages)->withSubPage('Dashboard')->addSubPages($this->subpages)->register();
+        $this->settings->addCustomPostTypes($this->postTypes);
     }
 
     public function setSettings()

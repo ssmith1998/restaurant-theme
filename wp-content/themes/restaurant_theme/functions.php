@@ -60,6 +60,35 @@ function create_posttype()
         )
 
     );
+
+    // Our custom post type function
+
+    register_post_type(
+        'Bookings',
+        // CPT Options
+        array(
+            'labels' => array(
+                'name' => __('Bookings'),
+                'singular_name' => __('Booking')
+            ),
+            'public' => true,
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'bookings'),
+            'show_in_rest' => true,
+
+        )
+    );
 }
 // Hooking up our function to theme setup
 add_action('init', 'create_posttype');
+
+//adding table headers to bookings table
+add_filter('manage_bookings_posts_columns', 'bs_bookings_table_head');
+function bs_bookings_table_head($defaults)
+{
+    $defaults['event_date']  = 'Event Date';
+    $defaults['ticket_status']    = 'Ticket Status';
+    $defaults['venue']   = 'Venue';
+    $defaults['author'] = 'Added By';
+    return $defaults;
+}

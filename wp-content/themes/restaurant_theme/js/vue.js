@@ -1,7 +1,7 @@
 Vue.component('booking-form', {
     template: `
     <div class="wrapper">
-    <form v-if="step === 1">
+    <form v-if="step === 1 && bookingSuccess === false">
   <div class="row flex-column">
   <h1 class="text-center">{{ title }}</h1>
     <div class="inputWrapper d-flex">
@@ -31,7 +31,7 @@ Vue.component('booking-form', {
 </form>
 
 
-<form v-if="step === 2" class="px-4 py-2">
+<form v-if="step === 2 && bookingSuccess === false" class="px-4 py-2">
 <div class="header d-flex pb-4">
 <div class="pr-4">
 <h6 style="font-size:30px;">{{ date }}</h6>
@@ -46,21 +46,21 @@ Vue.component('booking-form', {
 <div class="row pb-5">
 <div class="col-sm-6 py-3">
   <label for="fname">First Name</label>
-  <input type="text" class="form-control" id="fname">
+  <input type="text" class="form-control" id="fname" v-model="bookingFormStep2.fName">
 </div>
 <div class="col-sm-6 py-3">
   <label for="surname">Surname</label>
-  <input type="text" class="form-control" id="surname">
+  <input type="text" class="form-control" id="surname" v-model="bookingFormStep2.lName">
 </div>
 <div class="col-sm-6 py-3">
 <label for="phone">Phone</label>
-<input type="tel" class="form-control mb-5" id="phone">
+<input type="tel" class="form-control mb-5" id="phone" v-model="bookingFormStep2.phone">
 <label for="email">Email address</label>
-<input @keyup="bookingFormSubmit"  type="email" class="form-control" id="email" aria-describedby="emailHelp">
+<input @keyup="bookingFormSubmit"  type="email" class="form-control" id="email" aria-describedby="emailHelp" v-model="bookingFormStep2.email">
 </div>
 <div class="col-sm-6 py-3">
 <label for="requests">Special Requests</label>
-<textarea class="w-100 h-100 form-control" id="request"></textarea>
+<textarea class="w-100 h-100 form-control" id="request" v-model="bookingFormStep2.requests"></textarea>
 </div>
 </div>
 <div class="d-flex justify-content-between">
@@ -68,10 +68,50 @@ Vue.component('booking-form', {
 <button @click="onReserve" type="button" class="btn btn-dark">Reserve</button>
 </div>
 </form>
+
+<div v-if="bookingSuccess === true">
+<div class="pl-5 pt-3">
+<p>You are going to <strong>godere.</strong></p>
+<button class="rounded border border-dark bg-white p-2">View Reservation</button>
+</div>
+<div class="imagesWrapper d-flex pt-4" style="margin:0px -20px 0px -20px">
+        <div class="">
+        <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/shawnanggg-nmpW_WwwVSc-unsplash 1.png"/>
+        </div>
+        <div class="">
+        <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/image 1.png"/>
+        </div>
+        <div class="">
+        <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/image 2.png"/>
+        </div>
+</div>
+<div class="d-flex justify-content-between">
+        <div class="pt-3 d-flex pb-4">
+            <div class="pr-4">
+                <h6 style="font-size:30px;">{{ date }}</h6>
+                <h6>{{ month }}</h6>
+            </div>
+            <div class="d-flex flex-column">
+                <span><strong>Godere</strong></span>
+                <span><strong>Reservation for {{bookingFormStep1.party}}</strong></span>
+                <span>{{day}} . {{bookingFormStep1.time[0]}}</span>
+            </div>
+        </div>
+
+        <div class="btnWrapper d-flex justify-content-around align-items-center">
+        <button class="btn btn-dark rounded-circle mx-3">Call</button>
+        <button class="btn btn-dark rounded-circle mx-3">Call</button>
+        <button class="btn btn-dark rounded-circle mx-3">Call</button>
+        </div>
+</div>
 </div>
     `,
     data() {
         return {
+            bookingSuccess: true,
+            postId: '',
+            bookingConfirmed: null,
+            token: '',
             title: 'Bookings',
             bookingFormStep1: {
                 party: '',
@@ -79,13 +119,11 @@ Vue.component('booking-form', {
                 time: [],
             },
             bookingFormStep2: {
-                contact_info: {
-                    fName: '',
-                    lName: '',
-                    phone: '',
-                    email: '',
-                    requests: ''
-                }
+                fName: '',
+                lName: '',
+                phone: '',
+                email: '',
+                requests: ''
             },
             step: 1,
             times: [
@@ -111,11 +149,84 @@ Vue.component('booking-form', {
         }
     },
     methods: {
+        //1:get token for auth wordpress
         onReserve() {
-            axios.get('/user?ID=12345')
-                .then(function (response) {
+            //get token for auth
+            axios.post('http://api.sorrisopress.gomedia/wp-json/jwt-auth/v1/token', {
+                username: 'admin',
+                password: 'admin'
+            }).then((response) => {
+                console.log(response)
+                this.token = response.data.token
+                this.onMakeBooking(response.data.token)
+
+
+            })
+        },
+        //2: start booking process
+        onMakeBooking(token) {
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+            };
+            const initalData = {
+                title: 'Booking',
+            }
+            //make booking
+            axios.post('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings', initalData, {
+                    headers
+                })
+                .then((response) => {
                     // handle success
                     console.log(response);
+                    this.postId = response.data.id
+                    this.onCustomFields()
+
+                })
+        },
+        // 3:add custom field data to booking
+        onCustomFields() {
+            const data = {
+
+                "fields": {
+                    party: this.bookingFormStep1.party,
+                    booking_date: null,
+                    booking_time: null,
+                    email: this.bookingFormStep2.email,
+                    first_name: this.bookingFormStep2.fName,
+                    surname: this.bookingFormStep2.lName,
+                    phone: this.bookingFormStep2.phone,
+                    special_requests: this.bookingFormStep2.requests
+                }
+
+            }
+            const headers = {
+                'Authorization': `Bearer ${this.token}`,
+            };
+            //edit booking for the custom fields
+            axios.post(`http://api.sorrisopress.gomedia/wp-json/acf/v3/bookings/${this.postId}`, data, {
+                headers
+            }).then((response) => {
+                console.log('END', response);
+                //retrieve booking
+                this.onRetrieveBooking()
+
+
+            });
+        },
+        //4:retrieve booking made
+        onRetrieveBooking() {
+            const headers = {
+                'Authorization': `Bearer ${this.token}`,
+            };
+            axios.get(`http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings/${this.postId}`, {
+                    headers
+                })
+                .then((response) => {
+                    // handle success
+                    console.log(response);
+                    this.bookingConfirmed = response.data
+                    this.bookingSuccess = true
+
                 })
         },
         bookingFormSubmit() {
