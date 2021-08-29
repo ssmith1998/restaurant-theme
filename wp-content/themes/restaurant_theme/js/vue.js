@@ -74,18 +74,18 @@ Vue.component('booking-form', {
 <p>You are going to <strong>godere.</strong></p>
 <button class="rounded border border-dark bg-white p-2">View Reservation</button>
 </div>
-<div class="imagesWrapper d-flex pt-4" style="margin:0px -20px 0px -20px">
-        <div class="">
+<div class="imagesWrapper d-flex pt-4" style="margin:0px -20px 0px -21px">
+        <div class="img-wrapper flex-grow-1">
         <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/shawnanggg-nmpW_WwwVSc-unsplash 1.png"/>
         </div>
-        <div class="">
+        <div class="img-wrapper flex-grow-1">
         <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/image 1.png"/>
         </div>
-        <div class="">
+        <div class="img-wrapper flex-grow-1">
         <img class="w-100 h-100" src="http://api.sorrisopress.gomedia/wp-content/themes/restaurant_theme/assets/images/image 2.png"/>
         </div>
 </div>
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between px-3">
         <div class="pt-3 d-flex pb-4">
             <div class="pr-4">
                 <h6 style="font-size:30px;">{{ date }}</h6>
@@ -93,16 +93,29 @@ Vue.component('booking-form', {
             </div>
             <div class="d-flex flex-column">
                 <span><strong>Godere</strong></span>
-                <span><strong>Reservation for {{bookingFormStep1.party}}</strong></span>
-                <span>{{day}} . {{bookingFormStep1.time[0]}}</span>
+                <p>123 Street Lane</br> 
+                North Yorkshire
+                </br>
+                LS00 BBB</p>
+           
             </div>
         </div>
 
         <div class="btnWrapper d-flex justify-content-around align-items-center">
-        <button class="btn btn-dark rounded-circle mx-3">Call</button>
-        <button class="btn btn-dark rounded-circle mx-3">Call</button>
-        <button class="btn btn-dark rounded-circle mx-3">Call</button>
+        <button class="btn btn-dark rounded-circle mx-3 p-3"><i style="font-size:25px;" class="fa fa-phone-square"/></button>
+        <button class="btn btn-dark rounded-circle mx-3 p-3"><i style="font-size:25px;"class="fas fa-pencil-alt"/></button>
+        <button class="btn btn-dark rounded-circle mx-3 p-3"><i style="font-size:25px;"class="far fa-times-circle"></i></button>
         </div>
+</div>
+<div class="d-flex justify-content-between px-3 pb-3">
+    <div>
+        <p class="m-0"><strong>Reservation for {{bookingFormStep1.party}}</strong></p>
+        <p class="m-0">{{day}} . {{bookingFormStep1.time[0]}}</p>
+        <button class="rounded border border-dark bg-white p-2 mt-2">Get Directions</button>
+    </div>
+    <div class="d-flex align-items-end">
+        <button class=" p-2 mt-2 rounded text-white mr-3" style="background: #211F1F; width:200px;">Done</button>
+    </div>
 </div>
 </div>
     `,
