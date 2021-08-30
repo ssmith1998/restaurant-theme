@@ -119,3 +119,20 @@ a {
 .current_page_item {
   border-bottom: 2px solid black;
   font-weight: bold; }
+
+.viewBookingDialog {
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  background: black;
+  color: #ffffff;
+  border-radius: 10px;
+  right: 10%; }
+  .viewBookingDialog #closeModal {
+    font-size: 25px;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer; }
+    .viewBookingDialog #closeModal:hover {
+      color: red; }

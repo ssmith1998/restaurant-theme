@@ -1,6 +1,41 @@
+Vue.component('view-booking-dialog', {
+    template: `
+    <div v-if="show" class="viewBookingDialog">
+    <p>hello</p>
+    <i class="fa fa-times-circle" id="closeModal" @click="closeModal"/>
+    {{reservation.acf.first_name}}
+    {{reservation.acf.surname}}
+    {{reservation.acf.phone}}
+    {{reservation.acf.special_requests}}
+    {{reservation.acf.email}}
+    {{reservation.acf.party}}
+    </div>
+    `,
+
+    props: {
+        show: {
+            type: Boolean,
+            default: true
+        },
+        reservation: {
+            type: Object,
+            default: {}
+        }
+    },
+
+    methods: {
+        closeModal() {
+            this.$emit('closeModal', false)
+        }
+    }
+
+
+})
+
 Vue.component('booking-form', {
     template: `
     <div class="wrapper">
+    <view-booking-dialog :show="viewDialog" @closeModal="modalClose" :reservation="bookingConfirmed"/>
     <form v-if="step === 1 && bookingSuccess === false">
   <div class="row flex-column">
   <h1 class="text-center">{{ title }}</h1>
@@ -72,7 +107,7 @@ Vue.component('booking-form', {
 <div v-if="bookingSuccess === true">
 <div class="pl-5 pt-3">
 <p>You are going to <strong>godere.</strong></p>
-<button class="rounded border border-dark bg-white p-2">View Reservation</button>
+<button class="rounded border border-dark bg-white p-2" @click="viewDialog = true">View Reservation</button>
 </div>
 <div class="imagesWrapper d-flex pt-4" style="margin:0px -20px 0px -21px">
         <div class="img-wrapper flex-grow-1">
@@ -118,10 +153,12 @@ Vue.component('booking-form', {
     </div>
 </div>
 </div>
+</div>
     `,
     data() {
         return {
-            bookingSuccess: true,
+            viewDialog: false,
+            bookingSuccess: false,
             postId: '',
             bookingConfirmed: null,
             token: '',
@@ -162,6 +199,10 @@ Vue.component('booking-form', {
         }
     },
     methods: {
+        modalClose(val) {
+            console.log(val)
+            this.viewDialog = val
+        },
         //1:get token for auth wordpress
         onReserve() {
             //get token for auth
@@ -196,13 +237,13 @@ Vue.component('booking-form', {
 
                 })
         },
-        // 3:add custom field data to booking
+        // 3:add custom fields data to booking
         onCustomFields() {
             const data = {
 
                 "fields": {
                     party: this.bookingFormStep1.party,
-                    booking_date: null,
+                    booking_date: this.bookingDate,
                     booking_time: null,
                     email: this.bookingFormStep2.email,
                     first_name: this.bookingFormStep2.fName,
@@ -292,6 +333,24 @@ Vue.component('booking-form', {
             })
 
             return date
+
+        },
+        bookingDate() {
+            let selectedDate = new Date(this.bookingFormStep1.date)
+            var curr_date = selectedDate.getDate();
+            var curr_month = selectedDate.getMonth() + 1;
+            var curr_year = selectedDate.getFullYear();
+
+            return curr_year + '-' + curr_month + '-' + curr_date
+
+        },
+        bookingTime() {
+            let selectedDate = new Date(this.bookingFormStep1.date)
+            var curr_hours = selectedDate.getHours();
+            var curr_minutes = selectedDate.getMonth() + 1;
+            var curr_seconds = selectedDate.getFullYear();
+
+            return curr_hours + '-' + curr_minutes + '-' + curr_seconds
 
         }
     }
