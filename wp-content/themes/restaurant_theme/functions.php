@@ -116,9 +116,25 @@ add_filter('user_can_richedit', 'tn_disable_visual_editor');
 add_filter('manage_bookings_posts_columns', 'bs_bookings_table_head');
 function bs_bookings_table_head($defaults)
 {
-    $defaults['event_date']  = 'Event Date';
-    $defaults['ticket_status']    = 'Ticket Status';
-    $defaults['venue']   = 'Venue';
-    $defaults['author'] = 'Added By';
+    $defaults['booking_date']  = 'Booking Date';
+    $defaults['booking_time']    = 'Booking Time';
+    $defaults['party_number']   = 'Party Size';
+    $defaults['booking_name'] = 'Booking Name';
     return $defaults;
 }
+//customising content for each custom column in bookings table
+add_action('manage_bookings_posts_custom_column', function ($column_key, $post_id) {
+    $booking = get_post_meta($post_id);
+
+    // var_dump($booking);
+    // die();
+    if ($column_key == 'booking_date') {
+        echo date('d M Y', strtotime($booking['booking_date'][0]));
+    } else if ($column_key == 'booking_time') {
+        echo $booking['booking_time'][0];
+    } else if ($column_key == 'party_number') {
+        echo $booking['party'][0];
+    } else if ($column_key == 'booking_name') {
+        echo $booking['first_name'][0] . ' ' . $booking['surname'][0];
+    }
+}, 10, 2);
