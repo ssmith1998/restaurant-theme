@@ -120,7 +120,17 @@ function bs_bookings_table_head($defaults)
     $defaults['booking_time']    = 'Booking Time';
     $defaults['party_number']   = 'Party Size';
     $defaults['booking_name'] = 'Booking Name';
+    $defaults['contact_number'] = 'Contact Number';
+    $defaults['contact_email'] = 'Contact Email';
     return $defaults;
+}
+//add sortable booking columns
+add_filter('manage_edit-bookings_sortable_columns', 'sortableBookingColumns');
+function sortableBookingColumns($columns)
+{
+    $columns['booking_date'] = 'Booking Date';
+
+    return $columns;
 }
 //customising content for each custom column in bookings table
 add_action('manage_bookings_posts_custom_column', function ($column_key, $post_id) {
@@ -136,5 +146,11 @@ add_action('manage_bookings_posts_custom_column', function ($column_key, $post_i
         echo $booking['party'][0];
     } else if ($column_key == 'booking_name') {
         echo $booking['first_name'][0] . ' ' . $booking['surname'][0];
+    } else if ($column_key == 'contact_number') {
+        echo $booking['phone'][0];
+    } else if ($column_key == 'contact_email') {
+        echo "<a href='mailto: " . $booking['email'][0] . "'>
+            " . $booking['email'][0] . "
+        </a>";
     }
 }, 10, 2);

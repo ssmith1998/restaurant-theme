@@ -46,14 +46,14 @@ Vue.component('booking-form', {
       </div>
     <div class="col-sm-6">
       <label for="exampleInputEmail1">Date</label>
-      <input @keyup="bookingFormSubmit" v-model="bookingFormStep1.date" type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+      <input @keyup="bookingFormSubmit" @input="onFilterTimes" v-model="bookingFormStep1.date" type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
       </div>
     </div>
   </div>
   <div class="row flex-colmn my-5 border p-4">
     <h6 class="pb-4">Please choose a time below:</h6>
     <div class="row timesWrapper">
-    <div class="col-sm-3" v-for="(item, index) in times" :key="index">
+    <div class="col-sm-3" v-for="(item, index) in filteredTimes" :key="index">
     <p @click="timeSelect" :class="bookingFormStep1.time[0] === item ? 'selected' : ''" :data-value="item.value" class="p-2 border rounded timeItem" >
     {{item.time}}
     </p>
@@ -176,69 +176,70 @@ Vue.component('booking-form', {
                 requests: ''
             },
             step: 1,
+            filteredTimes: [],
             times: [{
                     time: '9AM',
-                    value: '9:00 AM',
+                    value: '9:00 am',
                 },
                 {
                     time: '10AM',
-                    value: '10:00 AM',
+                    value: '10:00 am',
                 },
                 {
                     time: '11AM',
-                    value: '11:00 AM',
+                    value: '11:00 am',
                 },
                 {
                     time: '12AM',
-                    value: '12:00 AM',
+                    value: '12:00 am',
                 },
                 {
                     time: '1PM',
-                    value: '1:00 PM',
+                    value: '1:00 pm',
                 },
                 {
                     time: '2PM',
-                    value: '2:00 PM',
+                    value: '2:00 pm',
                 },
                 {
                     time: '3PM',
-                    value: '3:00 PM',
+                    value: '3:00 pm',
                 },
                 {
                     time: '4PM',
-                    value: '4:00 PM',
+                    value: '4:00 pm',
                 },
                 {
                     time: '5PM',
-                    value: '5:00 PM',
+                    value: '5:00 pm',
                 },
                 {
                     time: '6PM',
-                    value: '6:00 PM',
+                    value: '6:00 pm',
                 },
                 {
                     time: '7PM',
-                    value: '7:00 PM',
+                    value: '7:00 pm',
                 },
                 {
                     time: '8PM',
-                    value: '8:00 PM',
+                    value: '8:00 pm',
                 },
                 {
                     time: '9PM',
-                    value: '9:00 PM',
+                    value: '9:00 pm',
                 },
                 {
                     time: '10PM',
-                    value: '10:00 PM',
+                    value: '10:00 pm',
                 },
                 {
                     time: '11PM',
-                    value: '11:00 PM',
+                    value: '11:00 pm',
                 },
                 {
                     time: '12PM',
-                    value: '12:00 PM',
+                    value: '12:00 pm',
                 },
 
             ],
@@ -246,6 +247,50 @@ Vue.component('booking-form', {
         }
     },
     methods: {
+        onFilterTimes() {
+            let selectedDate = new Date(this.bookingFormStep1.date)
+            var curr_date = selectedDate.getDate();
+            var curr_month = selectedDate.getMonth() + 1
+            var curr_year = selectedDate.getFullYear();
+
+            let checkDate = curr_date + '/' + ('0' + (curr_month)).slice(-2) + '/' + curr_year
+
+            axios.get('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings').then(bookings => {
+                let array = bookings.data
+                let bookingsMatched = array.filter(booking => {
+                    let bookingDate = booking.acf.booking_date
+                    console.log('Booked', bookingDate)
+                    console.log(checkDate)
+                    if (bookingDate === checkDate) {
+                        return booking
+                    }
+                })
+                console.log(bookingsMatched)
+                if (bookingsMatched.length > 0) {
+                    let foundTime = null;
+                    bookingsMatched.forEach(booking => {
+                        foundTime = this.times.find(time => {
+                            if (time.value === booking.acf.booking_time) {
+                                return time
+                            }
+                        })
+
+                        this.filteredTimes = this.times.filter(time => {
+                            if (time.value !== foundTime) {
+                                return time
+                            }
+                        })
+                    })
+                } else {
+                    this.filteredTimes = this.times
+                }
+
+                console.log(this.filteredTimes)
+
+
+            })
+
+        },
         modalClose(val) {
             console.log(val)
             this.viewDialog = val
