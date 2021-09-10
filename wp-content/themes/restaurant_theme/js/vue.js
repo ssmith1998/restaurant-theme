@@ -54,8 +54,8 @@ Vue.component('booking-form', {
     <h6 class="pb-4">Please choose a time below:</h6>
     <div class="row timesWrapper">
     <div class="col-sm-3" v-for="(item, index) in times" :key="index">
-    <p @click="timeSelect" :class="bookingFormStep1.time[0] === item ? 'selected' : ''" :data-value="item" class="p-2 border rounded timeItem" >
-    {{item}}
+    <p @click="timeSelect" :class="bookingFormStep1.time[0] === item ? 'selected' : ''" :data-value="item.value" class="p-2 border rounded timeItem" >
+    {{item.time}}
     </p>
     </div>
     </div>
@@ -176,23 +176,70 @@ Vue.component('booking-form', {
                 requests: ''
             },
             step: 1,
-            times: [
-                '9AM',
-                '10AM',
-                '11AM',
-                '12AM',
-                '1PM',
-                '2PM',
-                '3PM',
-                '4PM',
-                '5PM',
-                '6PM',
-                '7PM',
-                '8PM',
-                '9PM',
-                '10PM',
-                '11PM',
-                '12PM',
+            times: [{
+                    time: '9AM',
+                    value: '9:00 AM',
+                },
+                {
+                    time: '10AM',
+                    value: '10:00 AM',
+                },
+                {
+                    time: '11AM',
+                    value: '11:00 AM',
+                },
+                {
+                    time: '12AM',
+                    value: '12:00 AM',
+                },
+                {
+                    time: '1PM',
+                    value: '1:00 PM',
+                },
+                {
+                    time: '2PM',
+                    value: '2:00 PM',
+                },
+                {
+                    time: '3PM',
+                    value: '3:00 PM',
+                },
+                {
+                    time: '4PM',
+                    value: '4:00 PM',
+                },
+                {
+                    time: '5PM',
+                    value: '5:00 PM',
+                },
+                {
+                    time: '6PM',
+                    value: '6:00 PM',
+                },
+                {
+                    time: '7PM',
+                    value: '7:00 PM',
+                },
+                {
+                    time: '8PM',
+                    value: '8:00 PM',
+                },
+                {
+                    time: '9PM',
+                    value: '9:00 PM',
+                },
+                {
+                    time: '10PM',
+                    value: '10:00 PM',
+                },
+                {
+                    time: '11PM',
+                    value: '11:00 PM',
+                },
+                {
+                    time: '12PM',
+                    value: '12:00 PM',
+                },
 
             ],
 
@@ -224,6 +271,7 @@ Vue.component('booking-form', {
             };
             const initalData = {
                 title: 'Booking',
+                status: 'publish'
             }
             //make booking
             axios.post('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings', initalData, {
@@ -244,7 +292,7 @@ Vue.component('booking-form', {
                 "fields": {
                     party: this.bookingFormStep1.party,
                     booking_date: this.bookingDate,
-                    booking_time: null,
+                    booking_time: this.bookingFormStep1.time[0],
                     email: this.bookingFormStep2.email,
                     first_name: this.bookingFormStep2.fName,
                     surname: this.bookingFormStep2.lName,

@@ -20,6 +20,20 @@ function add_theme_scripts()
 
 add_action('wp_enqueue_scripts', 'add_theme_scripts');
 
+function addAdminScripts()
+{
+    global $post;
+
+    $post_type = get_post_type($post->ID);
+
+    if ($post_type === 'bookings') {
+        wp_enqueue_style('adminCSS', get_template_directory_uri() . '/css/admin.css', '1.1', 'all');
+    }
+}
+
+add_action('admin_enqueue_scripts', 'addAdminScripts');
+
+
 function custom_theme_setup()
 {
     register_nav_menus(array(
@@ -62,7 +76,6 @@ function create_posttype()
     );
 
     // Our custom post type function
-
     register_post_type(
         'Bookings',
         // CPT Options
@@ -75,12 +88,29 @@ function create_posttype()
             'has_archive' => true,
             'rewrite' => array('slug' => 'bookings'),
             'show_in_rest' => true,
+            'supports' => array('title')
+
 
         )
     );
 }
 // Hooking up our function to theme setup
 add_action('init', 'create_posttype');
+
+function tn_disable_visual_editor($can)
+{
+    global $post;
+
+    $post_type = get_post_type($post->ID);
+
+    if ($post_type === 'bookings') {
+        return false;
+        return $can;
+    }
+}
+add_filter('user_can_richedit', 'tn_disable_visual_editor');
+
+
 
 //adding table headers to bookings table
 add_filter('manage_bookings_posts_columns', 'bs_bookings_table_head');
