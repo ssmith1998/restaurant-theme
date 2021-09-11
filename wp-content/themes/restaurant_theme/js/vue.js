@@ -100,7 +100,9 @@ Vue.component('booking-form', {
 </div>
 <div class="d-flex justify-content-between">
 <button @click="prevStep" type="button" class="btn btn-primary">Back</button>
-<button @click="onReserve" type="button" class="btn btn-dark">Reserve</button>
+
+<button v-if="!loading" style="width:100px" @click="onReserve" type="button" class="btn btn-dark">Reserve</button>
+<button v-else style="width:100px" @click="onReserve" type="button" class="btn btn-dark"><i class="fas fa-spinner fa-pulse"></i></button>
 </div>
 </form>
 
@@ -161,6 +163,7 @@ Vue.component('booking-form', {
             bookingSuccess: false,
             postId: '',
             bookingConfirmed: null,
+            loading: false,
             token: '',
             title: 'Bookings',
             bookingFormStep1: {
@@ -304,6 +307,7 @@ Vue.component('booking-form', {
         },
         //1:get token for auth wordpress
         onReserve() {
+            this.loading = true
             //get token for auth
             axios.post('http://api.sorrisopress.gomedia/wp-json/jwt-auth/v1/token', {
                 username: 'admin',
@@ -380,6 +384,7 @@ Vue.component('booking-form', {
                     console.log(response);
                     this.bookingConfirmed = response.data
                     this.bookingSuccess = true
+                    this.loading = false
 
                 })
         },
