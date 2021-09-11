@@ -253,7 +253,7 @@ Vue.component('booking-form', {
             var curr_month = selectedDate.getMonth() + 1
             var curr_year = selectedDate.getFullYear();
 
-            let checkDate = curr_date + '/' + ('0' + (curr_month)).slice(-2) + '/' + curr_year
+            let checkDate = ('0' + (curr_date)).slice(-2) + '/' + ('0' + (curr_month)).slice(-2) + '/' + curr_year
 
             axios.get('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings').then(bookings => {
                 let array = bookings.data
