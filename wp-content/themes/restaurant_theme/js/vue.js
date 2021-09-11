@@ -267,13 +267,19 @@ Vue.component('booking-form', {
                 })
                 console.log(bookingsMatched)
                 if (bookingsMatched.length > 0) {
+                    //set filtered times to empty array
                     this.filteredTimes = []
+                    // push all times into new filteredTimesArray
                     this.times.forEach(time => {
                         this.filteredTimes.push(time)
                     })
+                    //loop over the matched bookings
                     for (let i = 0; i < bookingsMatched.length; i++) {
+                        //loop over all times in times array
                         for (let t = 0; t < this.times.length; t++) {
+                            //check if time values match
                             if (this.times[t].value === bookingsMatched[i].acf.booking_time) {
+                                //if match remove time from new filtered time array by index
                                 this.filteredTimes.splice(t, 1);
                             }
 
@@ -281,6 +287,7 @@ Vue.component('booking-form', {
 
                     }
                 } else {
+                    //if there are no bookings found for date selected set new array to the base times
                     this.filteredTimes = this.times
                 }
 
