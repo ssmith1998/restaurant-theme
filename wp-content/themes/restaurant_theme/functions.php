@@ -141,7 +141,7 @@ add_action('manage_bookings_posts_custom_column', function ($column_key, $post_i
     if ($column_key == 'booking_date') {
         echo date('d M Y', strtotime($booking['booking_date'][0]));
     } else if ($column_key == 'booking_time') {
-        echo $booking['booking_time'][0];
+        echo convertBookingTime($booking['booking_time'][0]) === false ? $booking['booking_time'][0] : convertBookingTime($booking['booking_time'][0]);
     } else if ($column_key == 'party_number') {
         echo $booking['party'][0];
     } else if ($column_key == 'booking_name') {
@@ -154,3 +154,114 @@ add_action('manage_bookings_posts_custom_column', function ($column_key, $post_i
         </a>";
     }
 }, 10, 2);
+
+function convertBookingTime($time)
+{
+    switch ($time) {
+        case '09:00:00':
+            return '9:00 AM';
+            break;
+        case '10:00:00':
+            return '10:00 AM';
+            break;
+        case '11:00:00':
+            return '11:00 AM';
+            break;
+        case '12:00:00':
+            return '12:00 PM';
+            break;
+        case '13:00:00':
+            return '1:00 PM';
+            break;
+        case '14:00:00':
+            return '2:00 PM';
+            break;
+        case '15:00:00':
+            return '3:00 PM';
+            break;
+        case '16:00:00':
+            return '4:00 PM';
+            break;
+        case '17:00:00':
+            return '5:00 PM';
+            break;
+        case '18:00:00':
+            return '6:00 PM';
+            break;
+        case '19:00:00':
+            return '7:00 PM';
+            break;
+        case '20:00:00':
+            return '8:00 PM';
+            break;
+        case '21:00:00':
+            return '9:00 PM';
+            break;
+        case '22:00:00':
+            return '10:00 PM';
+            break;
+        case '23:00:00':
+            return '11:00 PM';
+            break;
+        case '00:00:00':
+            return '12:00 PM';
+            break;
+
+        default:
+            return false;
+            break;
+    }
+}
+
+
+/************** CUSTOM API ROUTES ************************/
+
+/********ROUTE FOR BOOKINGS *****************/
+add_action('rest_api_init', function () {
+    register_rest_route('bookings-custom/v1', '/bookings', array(
+        'methods' => 'POST',
+        'callback' => 'my_awesome_func',
+        'permission_callback' => '__return_true'
+    ));
+});
+
+function my_awesome_func(WP_REST_Request $request)
+{
+    $dateChosen = $request['date'];
+    $times = (array)$request['times'];
+    $posts = get_posts([
+        'post_type' => 'bookings',
+        'post_status' => 'publish',
+        'numberposts' => -1
+    ]);
+
+    $foundPosts = [];
+    $newTimes = [];
+
+    foreach ($posts as $post) {
+        $Acf_feilds = get_fields($post->ID);
+        if ($dateChosen === $Acf_feilds['booking_date']) {
+            $newAcfFields = get_fields($post->ID);
+            foreach ($times as $time) {
+                if ($time['value'] !== $newAcfFields['booking_time']) {
+                    $newTimes[] = $time;
+                }
+            }
+        }
+        // $foundPosts[] = $Acf_feilds;
+    }
+
+    // foreach ($foundPosts as $post) {
+    //     $newTimes = [];
+    //     $Acf_feilds = get_fields($post->ID);
+    //     foreach ($times as $time) {
+    //         if ($Acf_feilds['booking_time'] !== $time['value']) {
+    //             $newTimes[] = $time;
+    //         }
+    //     }
+    // }
+
+    echo json_encode($newTimes);
+}
+
+/******** ROUTE FOR BOOKINGS END *****************/
