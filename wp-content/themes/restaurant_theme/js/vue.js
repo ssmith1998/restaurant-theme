@@ -267,25 +267,25 @@ Vue.component('booking-form', {
                 })
                 console.log(bookingsMatched)
                 if (bookingsMatched.length > 0) {
-                    let foundTime = null;
-                    bookingsMatched.forEach(booking => {
-                        foundTime = this.times.find(time => {
-                            if (time.value === booking.acf.booking_time) {
-                                return time
-                            }
-                        })
-
-                        this.filteredTimes = this.times.filter(time => {
-                            if (time.value !== foundTime) {
-                                return time
-                            }
-                        })
+                    this.filteredTimes = []
+                    this.times.forEach(time => {
+                        this.filteredTimes.push(time)
                     })
+                    for (let i = 0; i < bookingsMatched.length; i++) {
+                        for (let t = 0; t < this.times.length; t++) {
+                            if (this.times[t].value === bookingsMatched[i].acf.booking_time) {
+                                this.filteredTimes.splice(t, 1);
+                            }
+
+                        }
+
+                    }
                 } else {
                     this.filteredTimes = this.times
                 }
 
                 console.log(this.filteredTimes)
+                console.log(this.times)
 
 
             })
