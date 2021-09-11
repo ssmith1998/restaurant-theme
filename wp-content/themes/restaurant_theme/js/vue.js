@@ -46,7 +46,7 @@ Vue.component('booking-form', {
       </div>
     <div class="col-sm-6">
       <label for="exampleInputEmail1">Date</label>
-      <input @keyup="bookingFormSubmit" @input="onFilterTimes" v-model="bookingFormStep1.date" type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+      <input @keyup="bookingFormSubmit" @input="onFilterTimes" v-model="bookingFormStep1.date" type="date" class="form-control" aria-describedby="emailHelp">
       </div>
     </div>
   </div>
@@ -168,7 +168,7 @@ Vue.component('booking-form', {
             title: 'Bookings',
             bookingFormStep1: {
                 party: '',
-                date: '',
+                date: new Date().toISOString().substr(0, 10),
                 time: [],
             },
             bookingFormStep2: {
@@ -248,6 +248,10 @@ Vue.component('booking-form', {
             ],
 
         }
+    },
+    created() {
+
+        this.onFilterTimes()
     },
     methods: {
         onFilterTimes() {
