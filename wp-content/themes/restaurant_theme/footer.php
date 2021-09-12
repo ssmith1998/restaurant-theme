@@ -17,11 +17,11 @@ if (!is_front_page()) :
                 <p>0113 000 111</p>
             </div>
         </div>
-        <?php wp_footer(); ?>
     </footer>
 <?php
 endif;
 ?>
+<?php wp_footer(); ?>
 </div>
 </body>
 

@@ -155,11 +155,22 @@ Vue.component('booking-form', {
     </div>
 </div>
 </div>
+<div v-if="successDialog" class="overlaySuccess">
+    <div class="successDialog">
+        <h1 class="text-center">Your are going to godere!</h1>
+        <h6 class="text-center">An email has been sent to {{bookingFormStep2.email}} with information regarding your booking.</h6>
+        <div class="actionsWrapper text-right">
+            <button @click="successDialog = false" class="btn btn-primary">Close</button>
+        </div>
+    </div>
+</div>
+       
 </div>
     `,
     data() {
         return {
             viewDialog: false,
+            successDialog: false,
             bookingSuccess: false,
             postId: '',
             bookingConfirmed: null,
@@ -254,6 +265,13 @@ Vue.component('booking-form', {
         this.onFilterTimes()
     },
     methods: {
+        onSendConfirmation(booking) {
+            axios.post('http://api.sorrisopress.gomedia/wp-json/bookings-custom/v1/emailconfirmation', {
+                booking: booking
+            }).then(response => {
+                console.log(response);
+            })
+        },
         onFilterTimes() {
             let selectedDate = new Date(this.bookingFormStep1.date)
             var curr_date = selectedDate.getDate();
@@ -387,6 +405,7 @@ Vue.component('booking-form', {
                     // handle success
                     console.log(response);
                     this.bookingConfirmed = response.data
+                    this.successDialog = true
                     this.bookingSuccess = true
                     this.loading = false
 

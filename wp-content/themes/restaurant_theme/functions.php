@@ -24,10 +24,12 @@ function addAdminScripts()
 {
     global $post;
 
-    $post_type = get_post_type($post->ID);
+    if ($post) {
+        $post_type = get_post_type($post->ID);
 
-    if ($post_type === 'bookings') {
-        wp_enqueue_style('adminCSS', get_template_directory_uri() . '/css/admin.css', '1.1', 'all');
+        if ($post_type === 'bookings') {
+            wp_enqueue_style('adminCSS', get_template_directory_uri() . '/css/admin.css', '1.1', 'all');
+        }
     }
 }
 
@@ -155,6 +157,9 @@ add_action('manage_bookings_posts_custom_column', function ($column_key, $post_i
     }
 }, 10, 2);
 
+/**
+ * Converts booking time
+ */
 function convertBookingTime($time)
 {
     switch ($time) {
@@ -218,7 +223,7 @@ function convertBookingTime($time)
 
 /********ROUTE FOR BOOKINGS *****************/
 add_action('rest_api_init', function () {
-    register_rest_route('bookings-custom/v1', '/bookings', array(
+    register_rest_route('bookings-custom/v1', '/emailconfirmation', array(
         'methods' => 'POST',
         'callback' => 'my_awesome_func',
         'permission_callback' => '__return_true'
@@ -227,41 +232,11 @@ add_action('rest_api_init', function () {
 
 function my_awesome_func(WP_REST_Request $request)
 {
-    $dateChosen = $request['date'];
-    $times = (array)$request['times'];
-    $posts = get_posts([
-        'post_type' => 'bookings',
-        'post_status' => 'publish',
-        'numberposts' => -1
-    ]);
+    $booking = $request['booking'];
 
-    $foundPosts = [];
-    $newTimes = [];
+    // wp_mail();
 
-    foreach ($posts as $post) {
-        $Acf_feilds = get_fields($post->ID);
-        if ($dateChosen === $Acf_feilds['booking_date']) {
-            $newAcfFields = get_fields($post->ID);
-            foreach ($times as $time) {
-                if ($time['value'] !== $newAcfFields['booking_time']) {
-                    $newTimes[] = $time;
-                }
-            }
-        }
-        // $foundPosts[] = $Acf_feilds;
-    }
-
-    // foreach ($foundPosts as $post) {
-    //     $newTimes = [];
-    //     $Acf_feilds = get_fields($post->ID);
-    //     foreach ($times as $time) {
-    //         if ($Acf_feilds['booking_time'] !== $time['value']) {
-    //             $newTimes[] = $time;
-    //         }
-    //     }
-    // }
-
-    echo json_encode($newTimes);
+    // echo json_encode($newTimes);
 }
 
 /******** ROUTE FOR BOOKINGS END *****************/
