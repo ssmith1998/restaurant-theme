@@ -221,22 +221,62 @@ function convertBookingTime($time)
 
 /************** CUSTOM API ROUTES ************************/
 
-/********ROUTE FOR BOOKINGS *****************/
+/********ROUTE FOR BOOKING CONFIRMATION *****************/
 add_action('rest_api_init', function () {
     register_rest_route('bookings-custom/v1', '/emailconfirmation', array(
         'methods' => 'POST',
-        'callback' => 'my_awesome_func',
+        'callback' => 'emailConfirmation',
         'permission_callback' => '__return_true'
     ));
 });
 
-function my_awesome_func(WP_REST_Request $request)
+/********************** setting email content type to use html *******************************/
+add_filter("wp_mail_content_type", "mail_content_type");
+function mail_content_type()
+{
+    return "text/html";
+}
+/********************** setting email from field for emails *******************************/
+
+add_filter("wp_mail_from", "my_awesome_mail_from");
+function my_awesome_mail_from()
+{
+    return "hithere@myawesomesite.com";
+}
+/********************** setting email from name for emails *******************************/
+
+add_filter("wp_mail_from_name", "my_awesome_mail_from_name");
+function my_awesome_mail_from_name()
+{
+    return "MyAwesomeSite";
+}
+/********************** custom api endpoint for sending emails *******************************/
+
+function emailConfirmation(WP_REST_Request $request)
 {
     $booking = $request['booking'];
+    $email = $booking['acf']['email'];
+    $party = $booking['acf']['party'];
+    $time = $booking['acf']['booking_time'];
+    $date = $booking['acf']['booking_date'];
+    $message =
+        '
+    <h1 style="color:grey;">Booking Confirmation</h1>
+    <h3>Booking Details</h3>
+    <p>Time:' . $time . '</p>
+    <p>Date:' . $date . '</p>
+    <p>Party:' . $party . '</p>
+    <p>See you soon!</p>
+    ';
 
-    // wp_mail();
 
-    // echo json_encode($newTimes);
+
+    if (wp_mail($email, 'Booking Confirmation - Sorriso', $message)) {
+
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'sending confirmation failed ']);
+    }
 }
 
 /******** ROUTE FOR BOOKINGS END *****************/

@@ -157,7 +157,7 @@ Vue.component('booking-form', {
 </div>
 <div v-if="successDialog" class="overlaySuccess">
     <div class="successDialog">
-        <h1 class="text-center">Your are going to godere!</h1>
+        <h1 class="text-center">You're are going to godere!</h1>
         <h6 class="text-center">An email has been sent to {{bookingFormStep2.email}} with information regarding your booking.</h6>
         <div class="actionsWrapper text-right">
             <button @click="successDialog = false" class="btn btn-primary">Close</button>
@@ -280,8 +280,9 @@ Vue.component('booking-form', {
 
             let checkDate = ('0' + (curr_date)).slice(-2) + '/' + ('0' + (curr_month)).slice(-2) + '/' + curr_year
 
-            axios.get('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings').then(bookings => {
+            axios.get('http://api.sorrisopress.gomedia/wp-json/wp/v2/bookings?per_page=100').then(bookings => {
                 let array = bookings.data
+                console.log(array.length)
                 let bookingsMatched = array.filter(booking => {
                     let bookingDate = booking.acf.booking_date
                     console.log('Booked', bookingDate)
@@ -291,6 +292,9 @@ Vue.component('booking-form', {
                     }
                 })
                 console.log(bookingsMatched)
+                bookingsMatched.forEach(booking => {
+                    console.log('bookingDateMatched', booking.acf.booking_time)
+                })
                 if (bookingsMatched.length > 0) {
                     //set filtered times to empty array
                     this.filteredTimes = []
@@ -301,14 +305,18 @@ Vue.component('booking-form', {
                     //loop over the matched bookings
                     for (let i = 0; i < bookingsMatched.length; i++) {
                         //loop over all times in times array
-                        for (let t = 0; t < this.times.length; t++) {
-                            //check if time values match
-                            if (this.times[t].value === bookingsMatched[i].acf.booking_time) {
+                        // for (let t = 0; t < this.times.length; t++) {
+                        //check if time values match
+                        this.filteredTimes = this.filteredTimes.filter((time, index) => {
+                            if (time.value !== bookingsMatched[i].acf.booking_time) {
                                 //if match remove time from new filtered time array by index
-                                this.filteredTimes.splice(t, 1);
-                            }
+                                return time
 
-                        }
+                            }
+                        })
+                        // this.filteredTimes.splice(indexOfTime, 1);
+
+                        // }
 
                     }
                 } else {
@@ -408,6 +416,9 @@ Vue.component('booking-form', {
                     this.successDialog = true
                     this.bookingSuccess = true
                     this.loading = false
+
+                    //send confirmation email
+                    this.onSendConfirmation(this.bookingConfirmed)
 
                 })
         },
